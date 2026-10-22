@@ -58,6 +58,7 @@
                         android:layout_height="16dp"
                         android:layout_marginStart="10dp"
                         android:importantForAccessibility="no"
+                        android:src="@drawable/ic_wifi_off"
                         android:visibility="gone" />
                 </LinearLayout>
             </LinearLayout>

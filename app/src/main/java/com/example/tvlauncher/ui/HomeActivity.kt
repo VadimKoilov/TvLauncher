@@ -21,6 +21,7 @@ import com.example.tvlauncher.grid.GridState
 import com.example.tvlauncher.grid.GridStore
 import com.example.tvlauncher.grid.HomeGrid
 import com.example.tvlauncher.hdmi.HdmiSwitcher
+import com.example.tvlauncher.info.Connectivity
 import com.example.tvlauncher.info.Format
 import com.example.tvlauncher.info.InfoRepository
 import java.time.LocalDateTime
@@ -38,6 +39,9 @@ class HomeActivity : Activity() {
     private lateinit var moveHint: View
     private lateinit var weatherCard: View
     private lateinit var ratesCard: View
+    private lateinit var offlineIcon: View
+    private lateinit var connectivity: Connectivity
+    private var online = true
     private lateinit var info: InfoRepository
 
     private var state = GridState.EMPTY
@@ -65,6 +69,8 @@ class HomeActivity : Activity() {
         moveHint = findViewById(R.id.move_hint)
         weatherCard = findViewById(R.id.weather_card)
         ratesCard = findViewById(R.id.rates_card)
+        offlineIcon = findViewById(R.id.offline_icon)
+        connectivity = Connectivity(this)
         info = (application as LauncherApp).info
 
         apps = InstalledApps(this)
@@ -87,6 +93,13 @@ class HomeActivity : Activity() {
             addAction(Intent.ACTION_TIMEZONE_CHANGED)
         })
         updateClock()
+        online = connectivity.isOnline()
+        connectivity.watch { now ->
+            val cameBack = now && !online
+            online = now
+            bindInfo()
+            if (cameBack) info.onHomeVisible()
+        }
         info.listener = ::bindInfo
         bindInfo()
         info.onHomeVisible()
@@ -105,6 +118,7 @@ class HomeActivity : Activity() {
         super.onStop()
         unregisterReceiver(timeTick)
         info.listener = null
+        connectivity.unwatch()
         if (moveOrigin != null) finishMove(commit = false)
     }
 
@@ -125,8 +139,9 @@ class HomeActivity : Activity() {
     }
 
     private fun bindInfo() {
-        InfoViews.bindWeather(weatherCard, info.weather, dim = false)
-        InfoViews.bindRates(ratesCard, info.rates, dim = false)
+        offlineIcon.visibility = if (online) View.GONE else View.VISIBLE
+        InfoViews.bindWeather(weatherCard, info.weather, dim = !online)
+        InfoViews.bindRates(ratesCard, info.rates, dim = !online)
     }
 
     private fun refreshGrid() {
