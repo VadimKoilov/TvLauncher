@@ -1,5 +1,6 @@
 package com.example.tvlauncher.ui
 
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,6 +20,13 @@ class TileAdapter(
 
     /** Ключ плитки в режиме перемещения: она подсвечивается как «activated». */
     var movingKey: String? = null
+        set(value) {
+            field = value
+            notifyDataSetChanged()
+        }
+
+    /** Ключи плиток на главном экране: если задано, у них рисуется точка (экран «Все приложения»). */
+    var homeKeys: Set<String>? = null
         set(value) {
             field = value
             notifyDataSetChanged()
@@ -46,18 +54,30 @@ class TileAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_tile, parent, false)
         FocusAnim.attach(view, parent.context.getColor(R.color.accent))
-        return Holder(view)
+        val holder = Holder(view)
+        view.setOnClickListener { holder.tile?.let(onClick) }
+        // Долгое OK распознаём по автоповтору клавиши, а не таймером View: так оно срабатывает один раз
+        // и с пультом, и с `adb shell input keyevent --longpress`.
+        view.setOnKeyListener { v, keyCode, event ->
+            if (!isOk(keyCode) || event.action != KeyEvent.ACTION_DOWN || event.repeatCount == 0) {
+                return@setOnKeyListener false
+            }
+            if (event.repeatCount == 1) {
+                v.isPressed = false
+                holder.tile?.let { onLongClick(it, v) }
+            }
+            true
+        }
+        return holder
     }
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
-        val tile = tiles[position]
-        holder.bind(tile)
-        holder.itemView.setOnClickListener { onClick(tile) }
-        holder.itemView.setOnLongClickListener {
-            onLongClick(tile, it)
-            true
-        }
+        holder.bind(tiles[position])
     }
+
+    private fun isOk(keyCode: Int) =
+        keyCode == KeyEvent.KEYCODE_DPAD_CENTER || keyCode == KeyEvent.KEYCODE_ENTER ||
+            keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER
 
     inner class Holder(view: View) : RecyclerView.ViewHolder(view) {
         private val icon: ImageView = view.findViewById(R.id.icon)
@@ -65,13 +85,19 @@ class TileAdapter(
         private val plus: TextView = view.findViewById(R.id.plus)
         private val label: TextView = view.findViewById(R.id.label)
         private val badge: View = view.findViewById(R.id.badge)
+        private val homeDot: View = view.findViewById(R.id.home_dot)
+
+        var tile: Tile? = null
+            private set
 
         fun bind(tile: Tile) {
+            this.tile = tile
             icon.visibility = View.GONE
             glyph.visibility = View.GONE
             plus.visibility = View.GONE
             label.visibility = View.VISIBLE
             badge.visibility = View.GONE
+            homeDot.visibility = View.GONE
             itemView.setBackgroundResource(R.drawable.bg_tile)
             itemView.isActivated = false
 
@@ -82,6 +108,7 @@ class TileAdapter(
                     label.text = tile.label
                     badge.visibility = if (tile.fresh) View.VISIBLE else View.GONE
                     itemView.isActivated = tile.key == movingKey
+                    homeDot.visibility = if (homeKeys?.contains(tile.key) == true) View.VISIBLE else View.GONE
                 }
                 Tile.All -> {
                     glyph.visibility = View.VISIBLE

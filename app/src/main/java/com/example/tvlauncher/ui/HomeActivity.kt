@@ -120,7 +120,7 @@ class HomeActivity : Activity() {
     private fun onTileClick(tile: Tile) {
         when (tile) {
             is Tile.App -> launch(tile.key)
-            Tile.All, Tile.Add -> Unit // экран «Все приложения» — Task 5
+            Tile.All, Tile.Add -> startActivity(Intent(this, AllAppsActivity::class.java))
         }
     }
 
