@@ -32,6 +32,7 @@ class AllAppsActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        window.setBackgroundDrawable(GlowBackground(getColor(R.color.bg), getColor(R.color.glow)))
         setContentView(R.layout.activity_all_apps)
 
         grid = findViewById(R.id.grid)
