@@ -79,12 +79,20 @@ class AllAppsActivity : Activity() {
 
     private fun onTileLongClick(tile: Tile, view: View) {
         if (tile !is Tile.App) return
-        val item = if (tile.key in state.order) {
-            "Убрать с главного экрана" to { update(HomeGrid.remove(state, tile.key)) }
-        } else {
-            "Добавить на главный экран" to { update(HomeGrid.add(state, tile.key)) }
+        val actions = TileActions.allApps(
+            onHome = tile.key in state.order,
+            removable = installed[tile.key]?.removable == true,
+        )
+        TileMenu(view, actions.map { action -> action.title to { onAction(action, tile.key) } }).show()
+    }
+
+    private fun onAction(action: TileAction, key: String) {
+        when (action) {
+            TileAction.ADD_TO_HOME -> update(HomeGrid.add(state, key))
+            TileAction.REMOVE_FROM_HOME -> update(HomeGrid.remove(state, key))
+            TileAction.UNINSTALL -> TileActions.requestUninstall(this, key)
+            TileAction.MOVE -> Unit
         }
-        TileMenu(view, listOf(item)).show()
     }
 
     private fun update(newState: GridState) {

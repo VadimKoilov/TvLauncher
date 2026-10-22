@@ -148,13 +148,17 @@ class HomeActivity : Activity() {
 
     private fun onTileLongClick(tile: Tile, view: View) {
         if (tile !is Tile.App || moveOrigin != null) return
-        menu = TileMenu(
-            view,
-            listOf(
-                "Переместить" to { startMove(tile.key) },
-                "Убрать с главного экрана" to { removeFromHome(tile.key) },
-            ),
-        ).also { it.show() }
+        val actions = TileActions.home(removable = installed[tile.key]?.removable == true)
+        menu = TileMenu(view, actions.map { it.title to { onAction(it, tile.key) } }).also { it.show() }
+    }
+
+    private fun onAction(action: TileAction, key: String) {
+        when (action) {
+            TileAction.MOVE -> startMove(key)
+            TileAction.REMOVE_FROM_HOME -> removeFromHome(key)
+            TileAction.UNINSTALL -> TileActions.requestUninstall(this, key)
+            TileAction.ADD_TO_HOME -> Unit
+        }
     }
 
     /** В режиме перемещения стрелки двигают плитку, OK фиксирует, «Назад» отменяет. */
