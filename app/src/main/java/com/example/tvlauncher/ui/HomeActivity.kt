@@ -132,7 +132,7 @@ class HomeActivity : Activity() {
     private fun tiles(): List<Tile> =
         state.order.mapNotNull { key ->
             installed[key]?.let { Tile.App(key, it.label, key in state.fresh) }
-        } + Tile.All + Tile.Add
+        } + Tile.All
 
     private fun focusFirstTile() {
         grid.scrollToPosition(0)
@@ -142,7 +142,7 @@ class HomeActivity : Activity() {
     private fun onTileClick(tile: Tile) {
         when (tile) {
             is Tile.App -> launch(tile.key)
-            Tile.All, Tile.Add -> startActivity(Intent(this, AllAppsActivity::class.java))
+            Tile.All -> startActivity(Intent(this, AllAppsActivity::class.java))
         }
     }
 
