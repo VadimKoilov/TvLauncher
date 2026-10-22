@@ -92,4 +92,29 @@ class HomeGridTest {
         assertEquals(setOf("b"), s.fresh)
         assertEquals(listOf("a", "b"), s.order)
     }
+
+    // Сетка из 10 приложений по 6 в ряд: индексы 0..5 — верхний ряд, 6..9 — нижний (неполный).
+    @Test
+    fun verticalMoveStopsAtGridEdge() {
+        assertEquals(null, HomeGrid.moveTarget(from = 3, step = -6, size = 10, columns = 6))
+        assertEquals(null, HomeGrid.moveTarget(from = 7, step = 6, size = 10, columns = 6))
+    }
+
+    @Test
+    fun verticalMoveWithinGrid() {
+        assertEquals(8, HomeGrid.moveTarget(from = 2, step = 6, size = 10, columns = 6))
+        assertEquals(2, HomeGrid.moveTarget(from = 8, step = -6, size = 10, columns = 6))
+    }
+
+    @Test
+    fun downIntoShorterLastRowGoesToLastApp() {
+        assertEquals(9, HomeGrid.moveTarget(from = 5, step = 6, size = 10, columns = 6))
+    }
+
+    @Test
+    fun horizontalMoveStopsAtEnds() {
+        assertEquals(null, HomeGrid.moveTarget(from = 0, step = -1, size = 10, columns = 6))
+        assertEquals(null, HomeGrid.moveTarget(from = 9, step = 1, size = 10, columns = 6))
+        assertEquals(5, HomeGrid.moveTarget(from = 6, step = -1, size = 10, columns = 6))
+    }
 }

@@ -46,6 +46,20 @@ object HomeGrid {
         return state.copy(order = order)
     }
 
+    /**
+     * Куда переедет плитка при нажатии стрелки в режиме перемещения ([step]: ±1 или ±[columns]).
+     * null — плитка у края и стоит на месте. Вниз в неполный последний ряд — на последнее место.
+     */
+    fun moveTarget(from: Int, step: Int, size: Int, columns: Int): Int? {
+        val target = from + step
+        val lastIndex = size - 1
+        return when {
+            target in 0..lastIndex -> target
+            step == columns && from / columns < lastIndex / columns -> lastIndex
+            else -> null
+        }
+    }
+
     fun remove(state: GridState, key: String): GridState =
         state.copy(order = state.order - key, fresh = state.fresh - key)
 

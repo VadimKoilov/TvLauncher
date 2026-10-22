@@ -213,9 +213,8 @@ class HomeActivity : Activity() {
         val key = adapter.movingKey ?: return
         val from = state.order.indexOf(key)
         if (from < 0) return
-        // Только среди приложений: на «Все» и «+» плитка не заезжает.
-        val to = (from + step).coerceIn(0, state.order.lastIndex)
-        if (to == from) return
+        // Только среди приложений: на «Все» и «+» плитка не заезжает, у края — стоит на месте.
+        val to = HomeGrid.moveTarget(from, step, state.order.size, COLUMNS) ?: return
         state = HomeGrid.move(state, from, to)
         adapter.moveItem(from, to)
         grid.scrollToPosition(to)
