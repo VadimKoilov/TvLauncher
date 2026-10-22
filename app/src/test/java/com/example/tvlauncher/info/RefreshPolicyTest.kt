@@ -23,8 +23,14 @@ class RefreshPolicyTest {
 
     @Test
     fun ratesRefreshOnPowerOnOrWhenPending() {
-        assertTrue(RefreshPolicy.ratesDue(Trigger.POWER_ON, ratesPending = false))
-        assertFalse(RefreshPolicy.ratesDue(Trigger.HOME_VISIBLE, ratesPending = false))
-        assertTrue(RefreshPolicy.ratesDue(Trigger.HOME_VISIBLE, ratesPending = true))
+        assertTrue(RefreshPolicy.ratesDue(Trigger.POWER_ON, ratesPending = false, lastAttemptMs = now, nowMs = now))
+        assertFalse(RefreshPolicy.ratesDue(Trigger.HOME_VISIBLE, ratesPending = false, lastAttemptMs = null, nowMs = now))
+        assertTrue(RefreshPolicy.ratesDue(Trigger.HOME_VISIBLE, ratesPending = true, lastAttemptMs = null, nowMs = now))
+    }
+
+    @Test
+    fun pendingRatesRetryAtMostEvery10Minutes() {
+        assertFalse(RefreshPolicy.ratesDue(Trigger.HOME_VISIBLE, ratesPending = true, lastAttemptMs = now - 9 * minute, nowMs = now))
+        assertTrue(RefreshPolicy.ratesDue(Trigger.HOME_VISIBLE, ratesPending = true, lastAttemptMs = now - 10 * minute, nowMs = now))
     }
 }

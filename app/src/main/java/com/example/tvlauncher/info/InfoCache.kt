@@ -1,7 +1,6 @@
 package com.example.tvlauncher.info
 
 import android.content.SharedPreferences
-import java.time.LocalDate
 
 /** Последние полученные погода и курсы — показываются, пока нет свежих (prefs-файл "info"). */
 class InfoCache(private val prefs: SharedPreferences) {
@@ -32,17 +31,15 @@ class InfoCache(private val prefs: SharedPreferences) {
 
     var rates: Rates?
         get() {
-            val current = daily(R_CUR) ?: return null
-            val previous = daily(R_PREV) ?: return null
-            return Rates(current, previous)
+            val current = market(R_CUR) ?: return null
+            return Rates(current, previous = market(R_PREV))
         }
         set(value) {
             val editor = prefs.edit()
-            if (value == null) {
-                listOf(R_CUR, R_PREV).forEach { editor.remove("$it.date").remove("$it.usd").remove("$it.eur") }
-            } else {
-                putDaily(editor, R_CUR, value.current)
-                putDaily(editor, R_PREV, value.previous)
+            listOf(R_CUR, R_PREV).forEach { editor.remove("$it.at").remove("$it.usd").remove("$it.eur") }
+            value?.let {
+                putMarket(editor, R_CUR, it.current)
+                it.previous?.let { previous -> putMarket(editor, R_PREV, previous) }
             }
             editor.apply()
         }
@@ -52,19 +49,25 @@ class InfoCache(private val prefs: SharedPreferences) {
         get() = prefs.getBoolean(R_PENDING, true)
         set(value) = prefs.edit().putBoolean(R_PENDING, value).apply()
 
-    private fun daily(prefix: String): CbrDaily? {
-        if (!prefs.contains("$prefix.date")) return null
-        return CbrDaily(
-            date = LocalDate.ofEpochDay(prefs.getLong("$prefix.date", 0)),
+    var ratesAttemptAt: Long?
+        get() = if (prefs.contains(R_ATTEMPT)) prefs.getLong(R_ATTEMPT, 0) else null
+        set(value) {
+            prefs.edit().apply { if (value == null) remove(R_ATTEMPT) else putLong(R_ATTEMPT, value) }.apply()
+        }
+
+    private fun market(prefix: String): MarketRates? {
+        if (!prefs.contains("$prefix.at")) return null
+        return MarketRates(
+            updatedAt = prefs.getLong("$prefix.at", 0),
             usd = Double.fromBits(prefs.getLong("$prefix.usd", 0)),
             eur = Double.fromBits(prefs.getLong("$prefix.eur", 0)),
         )
     }
 
-    private fun putDaily(editor: SharedPreferences.Editor, prefix: String, d: CbrDaily) {
-        editor.putLong("$prefix.date", d.date.toEpochDay())
-            .putLong("$prefix.usd", d.usd.toRawBits())
-            .putLong("$prefix.eur", d.eur.toRawBits())
+    private fun putMarket(editor: SharedPreferences.Editor, prefix: String, m: MarketRates) {
+        editor.putLong("$prefix.at", m.updatedAt)
+            .putLong("$prefix.usd", m.usd.toRawBits())
+            .putLong("$prefix.eur", m.eur.toRawBits())
     }
 
     private companion object {
@@ -75,5 +78,6 @@ class InfoCache(private val prefs: SharedPreferences) {
         const val R_CUR = "rates.current"
         const val R_PREV = "rates.previous"
         const val R_PENDING = "rates.pending"
+        const val R_ATTEMPT = "rates.attempt"
     }
 }

@@ -24,7 +24,7 @@
 - Цвета (spec §6): фон `#09090B`, свечение `#3D7C7CFF` (rgba(124,124,255,.24)) сверху по центру; панели и плитки `#131316`, рамка 1dp `#13FFFFFF`; текст `#EDEDEF`; вторичный `#8B8D98`; подписи разделов `#6B6D78`; акцент `#8B8BFF`; рост `#3DDC84`; падение `#FF6B6B`.
 - Размеры из наброска (1 % ширины наброска = 9.6 dp): поля экрана 35dp сверху и снизу и 42dp по бокам; промежутки между блоками 17dp; часы 81sp `sans-serif-medium`, letterSpacing −0.055; дата 15sp; карточки — радиус 12dp, отступы 11×15dp; подписи разделов 10sp, заглавные, letterSpacing 0.1; кнопка HDMI 12.5sp, радиус 8dp, отступы 8×18dp, точка 6dp; сетка 6 колонок, промежуток 12dp, плитка 16:9, радиус 10dp, иконка 31dp в квадрате с радиусом 9dp, подпись 10sp `#A1A3AD` (у плитки в фокусе — белая).
 - Фокус: масштаб 1.1 за 150 мс, кольцо 2dp `#8B8BFF` и мягкое свечение того же цвета.
-- Сеть только к `api.open-meteo.com` и `www.cbr.ru`. Таймауты 10 с, заголовок `User-Agent: TvLauncher/1.0 (Android TV)`.
+- Сеть только к `api.open-meteo.com` и `open.er-api.com` (изменено в Task 9: см. spec §7.5). Таймауты 10 с, заголовок `User-Agent: TvLauncher/1.0 (Android TV)`.
 - Ключ служебной плитки «Настройки»: `"@settings"`.
 - `.superpowers/`, `build/`, `.gradle/`, `local.properties`, `.idea/` — в `.gitignore`.
 
@@ -228,6 +228,8 @@
 - [ ] **Step 6: Commit** — `feat: погода в Кудрово`.
 
 ### Task 9: Курсы ЦБ
+
+> Изменено при выполнении: cbr.ru недоступен с Android 11 (нет корня HARICA 2021), по решению пользователя источник — рыночный курс open.er-api.com. Фактические классы: `MarketRates`, `Rates(current, previous?)`, `RatesParser`, `RatesHistory.advance`; `RefreshPolicy.ratesDue(trigger, pending, lastAttemptMs, nowMs)` с повтором не чаще 10 минут. См. spec §7.5.
 
 **Files:**
 - Create: `SRC/info/Rates.kt` (`CbrDaily`, `Rates`, `CbrParser`, `Cbr`)

@@ -13,9 +13,14 @@ object RefreshPolicy {
         Trigger.HOME_VISIBLE -> lastSuccessMs == null || nowMs - lastSuccessMs >= WEATHER_MIN_INTERVAL_MS
     }
 
+    /** Повтор неудачной загрузки курсов не чаще раза в 10 минут: сервис курсов ограничивает частые запросы. */
+    const val RATES_RETRY_MS = 600_000L
+
     /** Курсы — только при включении; на главном экране догружаются, если при включении не вышло. */
-    fun ratesDue(trigger: Trigger, ratesPending: Boolean): Boolean = when (trigger) {
-        Trigger.POWER_ON -> true
-        Trigger.HOME_VISIBLE -> ratesPending
-    }
+    fun ratesDue(trigger: Trigger, ratesPending: Boolean, lastAttemptMs: Long?, nowMs: Long): Boolean =
+        when (trigger) {
+            Trigger.POWER_ON -> true
+            Trigger.HOME_VISIBLE ->
+                ratesPending && (lastAttemptMs == null || nowMs - lastAttemptMs >= RATES_RETRY_MS)
+        }
 }

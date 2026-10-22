@@ -185,6 +185,15 @@
                         android:fontFeatureSettings="tnum"
                         android:textSize="10sp" />
                 </LinearLayout>
+
+                <!-- Условие бесплатного доступа ExchangeRate-API: подпись источника рядом с курсами. -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="Rates By Exchange Rate API"
+                    android:textColor="@color/label"
+                    android:textSize="7.5sp" />
             </LinearLayout>
         </LinearLayout>
 

@@ -47,12 +47,16 @@ object InfoViews {
     private fun bindRate(card: View, valueId: Int, deltaId: Int, current: Double?, previous: Double?) {
         val value = card.findViewById<TextView>(valueId)
         val delta = card.findViewById<TextView>(deltaId)
-        if (current == null || previous == null) {
+        if (current == null) {
             value.text = "—"
             delta.text = ""
             return
         }
         value.text = Format.rate(current)
+        if (previous == null) {
+            delta.text = ""
+            return
+        }
         val d = Format.delta(current - previous)
         delta.text = d.text
         delta.setTextColor(card.context.getColor(when (d.trend) {

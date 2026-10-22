@@ -3,7 +3,6 @@ package com.example.tvlauncher.info
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import java.nio.charset.Charset
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -48,12 +47,14 @@ class InfoRepository(
         }
 
         if (trigger == Trigger.POWER_ON) cache.ratesPending = true
-        if (RefreshPolicy.ratesDue(trigger, cache.ratesPending) && ratesBusy.compareAndSet(false, true)) {
+        val ratesDue = RefreshPolicy.ratesDue(trigger, cache.ratesPending, cache.ratesAttemptAt, now())
+        if (ratesDue && ratesBusy.compareAndSet(false, true)) {
             Log.i(TAG, "rates fetch trigger=$trigger")
+            cache.ratesAttemptAt = now()
             executor.execute {
                 try {
-                    fetchRates()?.let {
-                        cache.rates = it
+                    Http.get(RatesParser.URL)?.let(RatesParser::parse)?.let {
+                        cache.rates = RatesHistory.advance(cache.rates, it)
                         cache.ratesPending = false
                         notifyChanged()
                     }
@@ -64,21 +65,11 @@ class InfoRepository(
         }
     }
 
-    /** Последний курс ЦБ и предыдущий; сохраняем, только если удалось получить оба. */
-    private fun fetchRates(): Rates? {
-        val current = Http.get(Cbr.LATEST_URL, CBR_CHARSET)?.let(CbrParser::parse) ?: return null
-        val previous = Http.get(Cbr.urlFor(Cbr.previousRequestDate(current.date)), CBR_CHARSET)
-            ?.let(CbrParser::parse)
-            ?: return null
-        return Rates(current, previous)
-    }
-
     private fun notifyChanged() {
         main.post { listener?.invoke() }
     }
 
     companion object {
         const val TAG = "TvLauncher"
-        private val CBR_CHARSET: Charset = Charset.forName("windows-1251")
     }
 }
