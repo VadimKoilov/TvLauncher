@@ -19,6 +19,7 @@ import com.example.tvlauncher.apps.LaunchableApp
 import com.example.tvlauncher.grid.GridState
 import com.example.tvlauncher.grid.GridStore
 import com.example.tvlauncher.grid.HomeGrid
+import com.example.tvlauncher.hdmi.HdmiSwitcher
 import com.example.tvlauncher.info.Format
 import java.time.LocalDateTime
 
@@ -64,6 +65,7 @@ class HomeActivity : Activity() {
         (grid.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
 
         FocusAnim.attach(hdmiButton, getColor(R.color.accent))
+        hdmiButton.setOnClickListener { HdmiSwitcher(this).switchToHdmi1() }
     }
 
     override fun onStart() {
