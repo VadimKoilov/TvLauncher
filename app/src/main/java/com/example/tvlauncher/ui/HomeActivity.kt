@@ -7,12 +7,15 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
+import android.os.SystemClock
+import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.widget.TextView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
+import com.example.tvlauncher.BuildConfig
 import com.example.tvlauncher.LauncherApp
 import com.example.tvlauncher.R
 import com.example.tvlauncher.apps.InstalledApps
@@ -47,6 +50,8 @@ class HomeActivity : Activity() {
     private var state = GridState.EMPTY
     private var installed: Map<String, LaunchableApp> = emptyMap()
     private var focusFirstOnResume = true
+
+    private var menu: TileMenu? = null
 
     /** Состояние до начала перемещения; не null — идёт режим перемещения. */
     private var moveOrigin: GridState? = null
@@ -126,6 +131,9 @@ class HomeActivity : Activity() {
     /** Кнопка «Домой», когда лаунчер уже открыт или вернулись из приложения. */
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
+        menu?.dismiss()
+        menu = null
+        if (moveOrigin != null) finishMove(commit = false)
         focusFirstOnResume = true
     }
 
@@ -146,10 +154,14 @@ class HomeActivity : Activity() {
     }
 
     private fun refreshGrid() {
+        val started = SystemClock.elapsedRealtime()
         installed = apps.query()
         state = HomeGrid.reconcile(store.load(), installed.keys)
         store.save(state)
         adapter.submit(tiles())
+        if (BuildConfig.DEBUG) {
+            Log.d(InfoRepository.TAG, "grid refresh ${SystemClock.elapsedRealtime() - started} ms, ${installed.size} apps")
+        }
     }
 
     private fun tiles(): List<Tile> =
@@ -171,13 +183,13 @@ class HomeActivity : Activity() {
 
     private fun onTileLongClick(tile: Tile, view: View) {
         if (tile !is Tile.App || moveOrigin != null) return
-        TileMenu(
+        menu = TileMenu(
             view,
             listOf(
                 "Переместить" to { startMove(tile.key) },
                 "Убрать с главного экрана" to { removeFromHome(tile.key) },
             ),
-        ).show()
+        ).also { it.show() }
     }
 
     /** В режиме перемещения стрелки двигают плитку, OK фиксирует, «Назад» отменяет. */

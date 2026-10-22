@@ -11,6 +11,13 @@ import com.example.tvlauncher.R
 /** Маленькое меню у плитки по долгому нажатию OK. */
 class TileMenu(private val anchor: View, private val items: List<Pair<String, () -> Unit>>) {
 
+    private var popup: PopupWindow? = null
+
+    fun dismiss() {
+        popup?.dismiss()
+        popup = null
+    }
+
     fun show() {
         val context = anchor.context
         val density = context.resources.displayMetrics.density
@@ -28,6 +35,7 @@ class TileMenu(private val anchor: View, private val items: List<Pair<String, ()
             true,
         )
         popup.elevation = dp(16).toFloat()
+        this.popup = popup
 
         for ((title, action) in items) {
             container.addView(TextView(context).apply {
