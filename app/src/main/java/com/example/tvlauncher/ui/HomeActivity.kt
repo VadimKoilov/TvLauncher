@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.example.tvlauncher.BuildConfig
-import com.example.tvlauncher.LauncherApp
 import com.example.tvlauncher.R
 import com.example.tvlauncher.apps.InstalledApps
 import com.example.tvlauncher.apps.LaunchableApp
@@ -24,9 +23,7 @@ import com.example.tvlauncher.grid.GridState
 import com.example.tvlauncher.grid.GridStore
 import com.example.tvlauncher.grid.HomeGrid
 import com.example.tvlauncher.hdmi.HdmiSwitcher
-import com.example.tvlauncher.info.Connectivity
 import com.example.tvlauncher.info.Format
-import com.example.tvlauncher.info.InfoRepository
 import java.time.LocalDateTime
 
 class HomeActivity : Activity() {
@@ -40,12 +37,6 @@ class HomeActivity : Activity() {
     private lateinit var hdmiButton: View
     private lateinit var grid: RecyclerView
     private lateinit var moveHint: View
-    private lateinit var weatherCard: View
-    private lateinit var ratesCard: View
-    private lateinit var offlineIcon: View
-    private lateinit var connectivity: Connectivity
-    private var online = true
-    private lateinit var info: InfoRepository
 
     private var state = GridState.EMPTY
     private var installed: Map<String, LaunchableApp> = emptyMap()
@@ -57,10 +48,7 @@ class HomeActivity : Activity() {
     private var moveOrigin: GridState? = null
 
     private val timeTick = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            updateClock()
-            info.onHomeVisible()
-        }
+        override fun onReceive(context: Context, intent: Intent) = updateClock()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,11 +61,6 @@ class HomeActivity : Activity() {
         hdmiButton = findViewById(R.id.hdmi_button)
         grid = findViewById(R.id.grid)
         moveHint = findViewById(R.id.move_hint)
-        weatherCard = findViewById(R.id.weather_card)
-        ratesCard = findViewById(R.id.rates_card)
-        offlineIcon = findViewById(R.id.offline_icon)
-        connectivity = Connectivity(this)
-        info = (application as LauncherApp).info
 
         apps = InstalledApps(this)
         store = GridStore(getSharedPreferences("grid", MODE_PRIVATE))
@@ -99,16 +82,6 @@ class HomeActivity : Activity() {
             addAction(Intent.ACTION_TIMEZONE_CHANGED)
         })
         updateClock()
-        online = connectivity.isOnline()
-        connectivity.watch { now ->
-            val cameBack = now && !online
-            online = now
-            bindInfo()
-            if (cameBack) info.onHomeVisible()
-        }
-        info.listener = ::bindInfo
-        bindInfo()
-        info.onHomeVisible()
     }
 
     override fun onResume() {
@@ -123,8 +96,6 @@ class HomeActivity : Activity() {
     override fun onStop() {
         super.onStop()
         unregisterReceiver(timeTick)
-        info.listener = null
-        connectivity.unwatch()
         if (moveOrigin != null) finishMove(commit = false)
     }
 
@@ -147,12 +118,6 @@ class HomeActivity : Activity() {
         date.text = Format.date(now.toLocalDate())
     }
 
-    private fun bindInfo() {
-        offlineIcon.visibility = if (online) View.GONE else View.VISIBLE
-        InfoViews.bindWeather(weatherCard, info.weather, dim = !online)
-        InfoViews.bindRates(ratesCard, info.rates, dim = !online)
-    }
-
     private fun refreshGrid() {
         val started = SystemClock.elapsedRealtime()
         installed = apps.query()
@@ -160,7 +125,7 @@ class HomeActivity : Activity() {
         store.save(state)
         adapter.submit(tiles())
         if (BuildConfig.DEBUG) {
-            Log.d(InfoRepository.TAG, "grid refresh ${SystemClock.elapsedRealtime() - started} ms, ${installed.size} apps")
+            Log.d(TAG, "grid refresh ${SystemClock.elapsedRealtime() - started} ms, ${installed.size} apps")
         }
     }
 
@@ -279,6 +244,7 @@ class HomeActivity : Activity() {
     }
 
     private companion object {
+        const val TAG = "TvLauncher"
         const val COLUMNS = 6
     }
 }
