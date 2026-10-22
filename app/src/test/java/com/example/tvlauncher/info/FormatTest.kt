@@ -32,4 +32,23 @@ class FormatTest {
         assertEquals("0°", Format.temperature(0.4))
         assertEquals("0°", Format.temperature(-0.5))
     }
+
+    @Test
+    fun rateHasTwoDecimalsWithComma() {
+        assertEquals("81,13", Format.rate(81.1255))
+        assertEquals("91,14", Format.rate(91.1364))
+    }
+
+    @Test
+    fun deltaShowsArrow() {
+        assertEquals(Delta("▼ 0,85", Trend.DOWN), Format.delta(81.1255 - 81.9739))
+        assertEquals(Delta("▲ 0,34", Trend.UP), Format.delta(0.34))
+    }
+
+    @Test
+    fun tinyDeltaIsFlat() {
+        assertEquals(Delta("0,00", Trend.FLAT), Format.delta(0.004))
+        assertEquals(Delta("0,00", Trend.FLAT), Format.delta(-0.0049))
+        assertEquals(Delta("0,00", Trend.FLAT), Format.delta(0.0))
+    }
 }

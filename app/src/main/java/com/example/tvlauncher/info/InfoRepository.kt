@@ -3,6 +3,7 @@ package com.example.tvlauncher.info
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import java.nio.charset.Charset
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -19,9 +20,12 @@ class InfoRepository(
 
     val weather: Weather? get() = cache.weather
 
+    val rates: Rates? get() = cache.rates
+
     private val executor = Executors.newSingleThreadExecutor()
     private val main = Handler(Looper.getMainLooper())
     private val weatherBusy = AtomicBoolean(false)
+    private val ratesBusy = AtomicBoolean(false)
 
     fun onPowerOn() = refresh(Trigger.POWER_ON)
 
@@ -42,6 +46,31 @@ class InfoRepository(
                 }
             }
         }
+
+        if (trigger == Trigger.POWER_ON) cache.ratesPending = true
+        if (RefreshPolicy.ratesDue(trigger, cache.ratesPending) && ratesBusy.compareAndSet(false, true)) {
+            Log.i(TAG, "rates fetch trigger=$trigger")
+            executor.execute {
+                try {
+                    fetchRates()?.let {
+                        cache.rates = it
+                        cache.ratesPending = false
+                        notifyChanged()
+                    }
+                } finally {
+                    ratesBusy.set(false)
+                }
+            }
+        }
+    }
+
+    /** Последний курс ЦБ и предыдущий; сохраняем, только если удалось получить оба. */
+    private fun fetchRates(): Rates? {
+        val current = Http.get(Cbr.LATEST_URL, CBR_CHARSET)?.let(CbrParser::parse) ?: return null
+        val previous = Http.get(Cbr.urlFor(Cbr.previousRequestDate(current.date)), CBR_CHARSET)
+            ?.let(CbrParser::parse)
+            ?: return null
+        return Rates(current, previous)
     }
 
     private fun notifyChanged() {
@@ -50,5 +79,6 @@ class InfoRepository(
 
     companion object {
         const val TAG = "TvLauncher"
+        private val CBR_CHARSET: Charset = Charset.forName("windows-1251")
     }
 }

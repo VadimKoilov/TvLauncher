@@ -118,7 +118,73 @@
                 android:paddingTop="10dp"
                 android:paddingEnd="@dimen/card_pad_h"
                 android:paddingBottom="10dp"
-                android:visibility="invisible" />
+                android:visibility="invisible">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:baselineAligned="true"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="14dp"
+                        android:layout_height="wrap_content"
+                        android:text="$"
+                        android:textColor="@color/text_muted"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/usd_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-medium"
+                        android:fontFeatureSettings="tnum"
+                        android:minWidth="52dp"
+                        android:textColor="@color/text"
+                        android:textSize="17sp" />
+
+                    <TextView
+                        android:id="@+id/usd_delta"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:fontFeatureSettings="tnum"
+                        android:textSize="10sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:baselineAligned="true"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="14dp"
+                        android:layout_height="wrap_content"
+                        android:text="€"
+                        android:textColor="@color/text_muted"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/eur_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-medium"
+                        android:fontFeatureSettings="tnum"
+                        android:minWidth="52dp"
+                        android:textColor="@color/text"
+                        android:textSize="17sp" />
+
+                    <TextView
+                        android:id="@+id/eur_delta"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:fontFeatureSettings="tnum"
+                        android:textSize="10sp" />
+                </LinearLayout>
+            </LinearLayout>
         </LinearLayout>
 
         <TextView

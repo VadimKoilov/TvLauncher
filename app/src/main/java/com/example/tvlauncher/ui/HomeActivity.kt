@@ -37,6 +37,7 @@ class HomeActivity : Activity() {
     private lateinit var grid: RecyclerView
     private lateinit var moveHint: View
     private lateinit var weatherCard: View
+    private lateinit var ratesCard: View
     private lateinit var info: InfoRepository
 
     private var state = GridState.EMPTY
@@ -63,6 +64,7 @@ class HomeActivity : Activity() {
         grid = findViewById(R.id.grid)
         moveHint = findViewById(R.id.move_hint)
         weatherCard = findViewById(R.id.weather_card)
+        ratesCard = findViewById(R.id.rates_card)
         info = (application as LauncherApp).info
 
         apps = InstalledApps(this)
@@ -124,6 +126,7 @@ class HomeActivity : Activity() {
 
     private fun bindInfo() {
         InfoViews.bindWeather(weatherCard, info.weather, dim = false)
+        InfoViews.bindRates(ratesCard, info.rates, dim = false)
     }
 
     private fun refreshGrid() {

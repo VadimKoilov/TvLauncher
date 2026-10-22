@@ -5,6 +5,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.example.tvlauncher.R
 import com.example.tvlauncher.info.Format
+import com.example.tvlauncher.info.Rates
+import com.example.tvlauncher.info.Trend
 import com.example.tvlauncher.info.Weather
 import com.example.tvlauncher.info.WeatherCodes
 import com.example.tvlauncher.info.WeatherIcon
@@ -33,6 +35,31 @@ object InfoViews {
         }
         card.alpha = if (dim) DIM_ALPHA else 1f
         card.visibility = View.VISIBLE
+    }
+
+    fun bindRates(card: View, r: Rates?, dim: Boolean) {
+        bindRate(card, R.id.usd_value, R.id.usd_delta, r?.current?.usd, r?.previous?.usd)
+        bindRate(card, R.id.eur_value, R.id.eur_delta, r?.current?.eur, r?.previous?.eur)
+        card.alpha = if (dim) DIM_ALPHA else 1f
+        card.visibility = View.VISIBLE
+    }
+
+    private fun bindRate(card: View, valueId: Int, deltaId: Int, current: Double?, previous: Double?) {
+        val value = card.findViewById<TextView>(valueId)
+        val delta = card.findViewById<TextView>(deltaId)
+        if (current == null || previous == null) {
+            value.text = "—"
+            delta.text = ""
+            return
+        }
+        value.text = Format.rate(current)
+        val d = Format.delta(current - previous)
+        delta.text = d.text
+        delta.setTextColor(card.context.getColor(when (d.trend) {
+            Trend.UP -> R.color.up
+            Trend.DOWN -> R.color.down
+            Trend.FLAT -> R.color.text_muted
+        }))
     }
 
     private fun iconRes(icon: WeatherIcon): Int = when (icon) {
