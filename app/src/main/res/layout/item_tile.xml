@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.example.tvlauncher.ui.AspectFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="6dp"
+    android:background="@drawable/bg_tile"
+    android:clickable="true"
+    android:focusable="true"
+    android:paddingStart="10dp"
+    android:paddingTop="9dp"
+    android:paddingEnd="10dp"
+    android:paddingBottom="9dp">
+
+    <ImageView
+        android:id="@+id/icon"
+        android:layout_width="@dimen/tile_icon"
+        android:layout_height="@dimen/tile_icon"
+        android:layout_gravity="top|start"
+        android:importantForAccessibility="no"
+        android:scaleType="fitCenter" />
+
+    <TextView
+        android:id="@+id/glyph"
+        android:layout_width="@dimen/tile_icon"
+        android:layout_height="@dimen/tile_icon"
+        android:layout_gravity="top|start"
+        android:gravity="center"
+        android:textColor="@color/text_muted"
+        android:textSize="16sp"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/plus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:fontFamily="sans-serif-light"
+        android:includeFontPadding="false"
+        android:text="+"
+        android:textColor="@color/label"
+        android:textSize="26sp"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|start"
+        android:duplicateParentState="true"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/tile_label_color"
+        android:textSize="@dimen/tile_label_text" />
+
+    <TextView
+        android:id="@+id/badge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|end"
+        android:background="@drawable/bg_new_badge"
+        android:fontFamily="sans-serif-medium"
+        android:paddingStart="6dp"
+        android:paddingTop="2dp"
+        android:paddingEnd="6dp"
+        android:paddingBottom="2dp"
+        android:text="новое"
+        android:textColor="@color/accent"
+        android:textSize="8sp"
+        android:visibility="gone" />
+
+    <View
+        android:id="@+id/home_dot"
+        android:layout_width="@dimen/dot"
+        android:layout_height="@dimen/dot"
+        android:layout_gravity="top|end"
+        android:layout_marginTop="2dp"
+        android:background="@drawable/dot_home"
+        android:visibility="gone" />
+</com.example.tvlauncher.ui.AspectFrameLayout>

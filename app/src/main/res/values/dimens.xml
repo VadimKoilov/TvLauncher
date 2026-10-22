@@ -1,0 +1,24 @@
+<resources>
+    <!-- Размеры из наброска home-v3.html: 1 % ширины наброска = 9.6 dp (экран 960×540 dp). -->
+    <dimen name="screen_pad_v">35dp</dimen>
+    <dimen name="screen_pad_h">42dp</dimen>
+    <dimen name="block_gap">17dp</dimen>
+    <dimen name="clock_text">81sp</dimen>
+    <dimen name="date_text">15sp</dimen>
+    <dimen name="card_radius">12dp</dimen>
+    <dimen name="card_pad_v">11dp</dimen>
+    <dimen name="card_pad_h">15dp</dimen>
+    <dimen name="label_text">10sp</dimen>
+    <dimen name="label_gap">8dp</dimen>
+    <dimen name="pill_text">12.5sp</dimen>
+    <dimen name="pill_radius">8dp</dimen>
+    <dimen name="pill_pad_v">8dp</dimen>
+    <dimen name="pill_pad_h">18dp</dimen>
+    <dimen name="dot">6dp</dimen>
+    <dimen name="grid_gap">12dp</dimen>
+    <dimen name="tile_radius">10dp</dimen>
+    <dimen name="tile_icon">31dp</dimen>
+    <dimen name="tile_icon_radius">9dp</dimen>
+    <dimen name="tile_label_text">10sp</dimen>
+    <dimen name="focus_ring">2dp</dimen>
+</resources>

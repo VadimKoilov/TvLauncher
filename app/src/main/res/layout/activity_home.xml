@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:orientation="vertical"
+        android:paddingStart="@dimen/screen_pad_h"
+        android:paddingTop="@dimen/screen_pad_v"
+        android:paddingEnd="@dimen/screen_pad_h"
+        android:paddingBottom="@dimen/screen_pad_v">
+
+        <!-- Шапка: не прокручивается. -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/clock"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="-14dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:fontFeatureSettings="tnum"
+                    android:includeFontPadding="false"
+                    android:letterSpacing="-0.055"
+                    android:textColor="@color/text"
+                    android:textSize="@dimen/clock_text" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="9dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/text_muted"
+                        android:textSize="@dimen/date_text" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <TextView
+            style="@style/SectionLabel"
+            android:layout_marginTop="@dimen/block_gap"
+            android:text="Вход" />
+
+        <TextView
+            android:id="@+id/hdmi_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_pill"
+            android:drawableStart="@drawable/dot_green"
+            android:drawablePadding="7dp"
+            android:focusable="true"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center_vertical"
+            android:paddingStart="@dimen/pill_pad_h"
+            android:paddingTop="@dimen/pill_pad_v"
+            android:paddingEnd="@dimen/pill_pad_h"
+            android:paddingBottom="@dimen/pill_pad_v"
+            android:text="HDMI 1"
+            android:textColor="@color/text"
+            android:textSize="@dimen/pill_text" />
+
+        <!-- Сетка прижата к низу экрана; если рядов больше двух, прокручивается только она. -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/block_gap"
+            android:layout_weight="1"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:gravity="bottom"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/SectionLabel"
+                android:text="Приложения" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/grid"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="-16dp"
+                android:layout_marginTop="-6dp"
+                android:layout_marginEnd="-16dp"
+                android:layout_marginBottom="-16dp"
+                android:clipChildren="true"
+                android:clipToPadding="false"
+                android:padding="10dp"
+                android:scrollbars="none" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/move_hint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="10dp"
+        android:text="◀ ▶ ▲ ▼ — переместить · OK — готово · Назад — отмена"
+        android:textColor="@color/label"
+        android:textSize="11sp"
+        android:visibility="gone" />
+</FrameLayout>
