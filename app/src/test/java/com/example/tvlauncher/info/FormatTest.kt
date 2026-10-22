@@ -18,4 +18,18 @@ class FormatTest {
         assertEquals("Четверг, 22 октября", Format.date(LocalDate.of(2026, 10, 22)))
         assertEquals("Воскресенье, 1 марта", Format.date(LocalDate.of(2026, 3, 1)))
     }
+
+    @Test
+    fun temperatureHasSign() {
+        assertEquals("+8°", Format.temperature(8.3))
+        assertEquals("−4°", Format.temperature(-3.6))
+        assertEquals("+1°", Format.temperature(0.5))
+    }
+
+    @Test
+    fun temperatureNearZeroHasNoSign() {
+        assertEquals("0°", Format.temperature(-0.4))
+        assertEquals("0°", Format.temperature(0.4))
+        assertEquals("0°", Format.temperature(-0.5))
+    }
 }

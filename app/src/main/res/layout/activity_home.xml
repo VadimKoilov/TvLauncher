@@ -73,7 +73,39 @@
                 android:paddingTop="@dimen/card_pad_v"
                 android:paddingEnd="@dimen/card_pad_h"
                 android:paddingBottom="@dimen/card_pad_v"
-                android:visibility="invisible" />
+                android:visibility="invisible">
+
+                <ImageView
+                    android:id="@+id/weather_icon"
+                    android:layout_width="38dp"
+                    android:layout_height="38dp"
+                    android:layout_marginEnd="11dp"
+                    android:importantForAccessibility="no" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/weather_temp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-medium"
+                        android:fontFeatureSettings="tnum"
+                        android:includeFontPadding="false"
+                        android:textColor="@color/text"
+                        android:textSize="27sp" />
+
+                    <TextView
+                        android:id="@+id/weather_sub"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="3dp"
+                        android:textColor="@color/text_muted"
+                        android:textSize="11sp" />
+                </LinearLayout>
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/rates_card"

@@ -13,6 +13,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
+import com.example.tvlauncher.LauncherApp
 import com.example.tvlauncher.R
 import com.example.tvlauncher.apps.InstalledApps
 import com.example.tvlauncher.apps.LaunchableApp
@@ -21,6 +22,7 @@ import com.example.tvlauncher.grid.GridStore
 import com.example.tvlauncher.grid.HomeGrid
 import com.example.tvlauncher.hdmi.HdmiSwitcher
 import com.example.tvlauncher.info.Format
+import com.example.tvlauncher.info.InfoRepository
 import java.time.LocalDateTime
 
 class HomeActivity : Activity() {
@@ -34,6 +36,8 @@ class HomeActivity : Activity() {
     private lateinit var hdmiButton: View
     private lateinit var grid: RecyclerView
     private lateinit var moveHint: View
+    private lateinit var weatherCard: View
+    private lateinit var info: InfoRepository
 
     private var state = GridState.EMPTY
     private var installed: Map<String, LaunchableApp> = emptyMap()
@@ -43,7 +47,10 @@ class HomeActivity : Activity() {
     private var moveOrigin: GridState? = null
 
     private val timeTick = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) = updateClock()
+        override fun onReceive(context: Context, intent: Intent) {
+            updateClock()
+            info.onHomeVisible()
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,6 +62,8 @@ class HomeActivity : Activity() {
         hdmiButton = findViewById(R.id.hdmi_button)
         grid = findViewById(R.id.grid)
         moveHint = findViewById(R.id.move_hint)
+        weatherCard = findViewById(R.id.weather_card)
+        info = (application as LauncherApp).info
 
         apps = InstalledApps(this)
         store = GridStore(getSharedPreferences("grid", MODE_PRIVATE))
@@ -76,6 +85,9 @@ class HomeActivity : Activity() {
             addAction(Intent.ACTION_TIMEZONE_CHANGED)
         })
         updateClock()
+        info.listener = ::bindInfo
+        bindInfo()
+        info.onHomeVisible()
     }
 
     override fun onResume() {
@@ -90,6 +102,7 @@ class HomeActivity : Activity() {
     override fun onStop() {
         super.onStop()
         unregisterReceiver(timeTick)
+        info.listener = null
         if (moveOrigin != null) finishMove(commit = false)
     }
 
@@ -107,6 +120,10 @@ class HomeActivity : Activity() {
         val now = LocalDateTime.now()
         clock.text = Format.time(now.toLocalTime())
         date.text = Format.date(now.toLocalDate())
+    }
+
+    private fun bindInfo() {
+        InfoViews.bindWeather(weatherCard, info.weather, dim = false)
     }
 
     private fun refreshGrid() {
