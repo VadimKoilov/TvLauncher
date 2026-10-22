@@ -1,0 +1,15 @@
+<resources>
+    <color name="bg">#09090B</color>
+    <color name="glow">#3D7C7CFF</color>
+    <color name="panel">#131316</color>
+    <color name="panel_stroke">#13FFFFFF</color>
+    <color name="text">#EDEDEF</color>
+    <color name="text_muted">#8B8D98</color>
+    <color name="label">#6B6D78</color>
+    <color name="tile_label">#A1A3AD</color>
+    <color name="accent">#8B8BFF</color>
+    <color name="accent_fill">#2E7C7CFF</color>
+    <color name="badge_bg">#297C7CFF</color>
+    <color name="up">#3DDC84</color>
+    <color name="down">#FF6B6B</color>
+</resources>
