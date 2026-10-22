@@ -29,17 +29,6 @@
         android:textSize="16sp"
         android:visibility="gone" />
 
-    <TextView
-        android:id="@+id/plus"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:fontFamily="sans-serif-light"
-        android:includeFontPadding="false"
-        android:text="+"
-        android:textColor="@color/label"
-        android:textSize="26sp"
-        android:visibility="gone" />
 
     <TextView
         android:id="@+id/label"

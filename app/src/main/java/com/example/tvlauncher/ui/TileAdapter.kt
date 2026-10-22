@@ -56,7 +56,6 @@ class TileAdapter(
     override fun getItemId(position: Int): Long = when (val t = tiles[position]) {
         is Tile.App -> t.key.hashCode().toLong()
         Tile.All -> -1L
-        Tile.Add -> -2L
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
@@ -90,7 +89,6 @@ class TileAdapter(
     inner class Holder(view: View) : RecyclerView.ViewHolder(view) {
         private val icon: ImageView = view.findViewById(R.id.icon)
         private val glyph: TextView = view.findViewById(R.id.glyph)
-        private val plus: TextView = view.findViewById(R.id.plus)
         private val label: TextView = view.findViewById(R.id.label)
         private val badge: View = view.findViewById(R.id.badge)
         private val homeDot: View = view.findViewById(R.id.home_dot)
@@ -102,7 +100,6 @@ class TileAdapter(
             this.tile = tile
             icon.visibility = View.GONE
             glyph.visibility = View.GONE
-            plus.visibility = View.GONE
             label.visibility = View.VISIBLE
             badge.visibility = View.GONE
             homeDot.visibility = View.GONE
@@ -122,11 +119,6 @@ class TileAdapter(
                     glyph.visibility = View.VISIBLE
                     glyph.text = "⋯"
                     label.text = "Все"
-                }
-                Tile.Add -> {
-                    plus.visibility = View.VISIBLE
-                    label.visibility = View.GONE
-                    itemView.setBackgroundResource(R.drawable.bg_tile_add)
                 }
             }
         }

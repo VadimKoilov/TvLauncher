@@ -16,6 +16,7 @@ class InstalledApps(private val context: Context) {
 
     private val pm: PackageManager = context.packageManager
     private val icons = HashMap<String, Drawable>()
+    private val iconSizePx = context.resources.getDimensionPixelSize(com.example.tvlauncher.R.dimen.tile_icon) * 3 / 2
 
     fun query(): Map<String, LaunchableApp> {
         val result = LinkedHashMap<String, LaunchableApp>()
@@ -49,11 +50,12 @@ class InstalledApps(private val context: Context) {
 
     fun icon(key: String): Drawable = icons.getOrPut(key) {
         val pkg = if (key == HomeGrid.SETTINGS_KEY) SETTINGS_PACKAGE else key
-        try {
+        val raw = try {
             pm.getApplicationIcon(pkg)
         } catch (e: PackageManager.NameNotFoundException) {
             pm.defaultActivityIcon
         }
+        IconCleaner.clean(raw, iconSizePx, context.resources)
     }
 
     private companion object {
