@@ -43,6 +43,14 @@ class TileAdapter(
 
     fun tileAt(position: Int): Tile = tiles[position]
 
+    fun positionOf(key: String): Int = tiles.indexOfFirst { it is Tile.App && it.key == key }
+
+    /** Перемещение без полной перерисовки: View плитки едет вместе с ней и не теряет фокус. */
+    fun moveItem(from: Int, to: Int) {
+        tiles = tiles.toMutableList().apply { add(to, removeAt(from)) }
+        notifyItemMoved(from, to)
+    }
+
     override fun getItemCount(): Int = tiles.size
 
     override fun getItemId(position: Int): Long = when (val t = tiles[position]) {
