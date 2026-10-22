@@ -71,6 +71,8 @@ class AllAppsActivity : Activity() {
             startActivity(app.launch)
         } catch (e: ActivityNotFoundException) {
             return
+        } catch (e: SecurityException) {
+            return
         }
         if (tile.key in state.fresh) update(HomeGrid.clearFresh(state, tile.key))
     }

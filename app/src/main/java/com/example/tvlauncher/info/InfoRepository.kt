@@ -40,6 +40,9 @@ class InfoRepository(
                         cache.weatherAt = now()
                         notifyChanged()
                     }
+                } catch (e: Exception) {
+                    // Любая неожиданная ошибка не должна ронять главный экран (он перезапускался бы по кругу).
+                    Log.e(TAG, "weather fetch crashed", e)
                 } finally {
                     weatherBusy.set(false)
                 }
@@ -50,14 +53,19 @@ class InfoRepository(
         val ratesDue = RefreshPolicy.ratesDue(trigger, cache.ratesPending, cache.ratesAttemptAt, now())
         if (ratesDue && ratesBusy.compareAndSet(false, true)) {
             Log.i(TAG, "rates fetch trigger=$trigger")
-            cache.ratesAttemptAt = now()
             executor.execute {
                 try {
-                    Http.get(RatesParser.URL)?.let(RatesParser::parse)?.let {
+                    val result = Http.request(RatesParser.URL)
+                    // Паузу между попытками отсчитываем, только если сервер ответил: без сети при включении
+                    // курсы подгрузятся сразу, как появится сеть.
+                    if (result != HttpResult.Unreachable) cache.ratesAttemptAt = now()
+                    (result as? HttpResult.Ok)?.body?.let(RatesParser::parse)?.let {
                         cache.rates = RatesHistory.advance(cache.rates, it)
                         cache.ratesPending = false
                         notifyChanged()
                     }
+                } catch (e: Exception) {
+                    Log.e(TAG, "rates fetch crashed", e)
                 } finally {
                     ratesBusy.set(false)
                 }

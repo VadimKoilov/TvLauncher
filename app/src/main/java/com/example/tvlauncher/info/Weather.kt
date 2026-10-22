@@ -13,11 +13,12 @@ object WeatherParser {
 
     fun parse(json: String): Weather? = try {
         val current = JSONObject(json).getJSONObject("current")
-        Weather(
-            tempC = current.getDouble("temperature_2m"),
-            code = current.getInt("weather_code"),
-            isDay = current.getInt("is_day") == 1,
-        )
+        val temp = current.getDouble("temperature_2m")
+        if (!temp.isFinite()) {
+            null
+        } else {
+            Weather(tempC = temp, code = current.getInt("weather_code"), isDay = current.getInt("is_day") == 1)
+        }
     } catch (e: JSONException) {
         null
     }

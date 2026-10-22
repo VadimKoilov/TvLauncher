@@ -22,7 +22,8 @@ object RatesParser {
         val rates = root.getJSONObject("rates")
         val rubPerUsd = rates.getDouble("RUB")
         val eurPerUsd = rates.getDouble("EUR")
-        if (root.optString("result") != "success" || rubPerUsd <= 0 || eurPerUsd <= 0) {
+        val valid = rubPerUsd.isFinite() && eurPerUsd.isFinite() && rubPerUsd > 0 && eurPerUsd > 0
+        if (root.optString("result") != "success" || !valid) {
             null
         } else {
             MarketRates(root.getLong("time_last_update_unix"), usd = rubPerUsd, eur = rubPerUsd / eurPerUsd)

@@ -29,6 +29,12 @@ class RatesTest {
         assertNull(RatesParser.parse(""))
     }
 
+    @Test
+    fun parseRejectsNonFiniteRates() {
+        assertNull(RatesParser.parse("""{"result":"success","time_last_update_unix":1,"rates":{"RUB":"NaN","EUR":0.89}}"""))
+        assertNull(RatesParser.parse("""{"result":"success","time_last_update_unix":1,"rates":{"RUB":82.0,"EUR":"Infinity"}}"""))
+    }
+
     private fun rates(at: Long, usd: Double) = MarketRates(updatedAt = at, usd = usd, eur = usd + 10)
 
     @Test

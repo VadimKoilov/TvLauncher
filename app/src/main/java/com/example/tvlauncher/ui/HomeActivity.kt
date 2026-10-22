@@ -257,6 +257,8 @@ class HomeActivity : Activity() {
             startActivity(app.launch)
         } catch (e: ActivityNotFoundException) {
             return
+        } catch (e: SecurityException) {
+            return
         }
         if (key in state.fresh) {
             state = HomeGrid.clearFresh(state, key)

@@ -27,6 +27,11 @@ class WeatherTest {
     }
 
     @Test
+    fun parseRejectsNonFiniteTemperature() {
+        assertNull(WeatherParser.parse("""{"current":{"temperature_2m":"NaN","weather_code":1,"is_day":1}}"""))
+    }
+
+    @Test
     fun codesMapToRussian() {
         assertEquals("пасмурно", WeatherCodes.describe(3))
         assertEquals("малооблачно", WeatherCodes.describe(1))
