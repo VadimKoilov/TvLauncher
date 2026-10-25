@@ -148,7 +148,10 @@ class HomeActivity : Activity() {
 
     private fun onTileLongClick(tile: Tile, view: View) {
         if (tile !is Tile.App || moveOrigin != null) return
-        val actions = TileActions.home(removable = installed[tile.key]?.removable == true)
+        val actions = TileActions.home(
+            removable = installed[tile.key]?.removable == true,
+            stoppable = tile.key != HomeGrid.SETTINGS_KEY,
+        )
         menu = TileMenu(view, actions.map { it.title to { onAction(it, tile.key) } }).also { it.show() }
     }
 
@@ -156,6 +159,7 @@ class HomeActivity : Activity() {
         when (action) {
             TileAction.MOVE -> startMove(key)
             TileAction.REMOVE_FROM_HOME -> removeFromHome(key)
+            TileAction.STOP -> TileActions.openAppInfo(this, key)
             TileAction.UNINSTALL -> TileActions.requestUninstall(this, key)
             TileAction.ADD_TO_HOME -> Unit
         }

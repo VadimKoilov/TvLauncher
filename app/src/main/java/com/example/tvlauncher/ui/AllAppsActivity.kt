@@ -82,6 +82,7 @@ class AllAppsActivity : Activity() {
         val actions = TileActions.allApps(
             onHome = tile.key in state.order,
             removable = installed[tile.key]?.removable == true,
+            stoppable = tile.key != HomeGrid.SETTINGS_KEY,
         )
         TileMenu(view, actions.map { action -> action.title to { onAction(action, tile.key) } }).show()
     }
@@ -90,6 +91,7 @@ class AllAppsActivity : Activity() {
         when (action) {
             TileAction.ADD_TO_HOME -> update(HomeGrid.add(state, key))
             TileAction.REMOVE_FROM_HOME -> update(HomeGrid.remove(state, key))
+            TileAction.STOP -> TileActions.openAppInfo(this, key)
             TileAction.UNINSTALL -> TileActions.requestUninstall(this, key)
             TileAction.MOVE -> Unit
         }
