@@ -24,6 +24,7 @@ import com.example.tvlauncher.grid.GridStore
 import com.example.tvlauncher.grid.HomeGrid
 import com.example.tvlauncher.hdmi.HdmiSwitcher
 import com.example.tvlauncher.info.Format
+import com.example.tvlauncher.settings.SystemSettings
 import java.time.LocalDateTime
 
 class HomeActivity : Activity() {
@@ -72,6 +73,10 @@ class HomeActivity : Activity() {
 
         FocusAnim.attach(hdmiButton, getColor(R.color.accent))
         hdmiButton.setOnClickListener { HdmiSwitcher(this).switchToHdmi1() }
+
+        val bluetoothButton = findViewById<View>(R.id.bluetooth_button)
+        FocusAnim.attach(bluetoothButton, getColor(R.color.accent))
+        bluetoothButton.setOnClickListener { SystemSettings.openBluetooth(this) }
     }
 
     override fun onStart() {

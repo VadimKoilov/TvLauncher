@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">TvLauncher</string>
+    <string name="settings_key_service_label">TvLauncher: кнопка настроек</string>
+    <string name="settings_key_service_description">Кнопка ⚙ на пульте открывает настройки телевизора в любом приложении.</string>
 </resources>

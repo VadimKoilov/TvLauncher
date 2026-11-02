@@ -58,25 +58,53 @@
         <TextView
             style="@style/SectionLabel"
             android:layout_marginTop="@dimen/block_gap"
-            android:text="Вход" />
+            android:text="Быстро" />
 
-        <TextView
-            android:id="@+id/hdmi_button"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_pill"
-            android:drawableStart="@drawable/dot_green"
-            android:drawablePadding="7dp"
-            android:focusable="true"
-            android:fontFamily="sans-serif-medium"
-            android:gravity="center_vertical"
-            android:paddingStart="@dimen/pill_pad_h"
-            android:paddingTop="@dimen/pill_pad_v"
-            android:paddingEnd="@dimen/pill_pad_h"
-            android:paddingBottom="@dimen/pill_pad_v"
-            android:text="HDMI 1"
-            android:textColor="@color/text"
-            android:textSize="@dimen/pill_text" />
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/hdmi_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_pill"
+                android:drawableStart="@drawable/dot_green"
+                android:drawablePadding="7dp"
+                android:focusable="true"
+                android:fontFamily="sans-serif-medium"
+                android:gravity="center_vertical"
+                android:paddingStart="@dimen/pill_pad_h"
+                android:paddingTop="@dimen/pill_pad_v"
+                android:paddingEnd="@dimen/pill_pad_h"
+                android:paddingBottom="@dimen/pill_pad_v"
+                android:text="HDMI 1"
+                android:textColor="@color/text"
+                android:textSize="@dimen/pill_text" />
+
+            <!-- «Пульты и аксессуары»: включить Bluetooth, подключить наушники. -->
+            <TextView
+                android:id="@+id/bluetooth_button"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginStart="@dimen/pill_gap"
+                android:background="@drawable/bg_pill"
+                android:drawableStart="@drawable/ic_bluetooth"
+                android:drawablePadding="5dp"
+                android:focusable="true"
+                android:fontFamily="sans-serif-medium"
+                android:gravity="center_vertical"
+                android:paddingStart="@dimen/pill_pad_h"
+                android:paddingTop="@dimen/pill_pad_v"
+                android:paddingEnd="@dimen/pill_pad_h"
+                android:paddingBottom="@dimen/pill_pad_v"
+                android:text="Bluetooth"
+                android:textColor="@color/text"
+                android:textSize="@dimen/pill_text" />
+        </LinearLayout>
 
         <!-- Сетка прижата к низу экрана; если рядов больше двух, прокручивается только она. -->
         <LinearLayout
