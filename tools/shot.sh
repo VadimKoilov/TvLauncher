@@ -3,7 +3,7 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-TV="${TV:-192.168.31.103:5555}"
+TV="${TV:-192.168.1.238:5555}"
 NAME="${1:?usage: $0 NAME}"
 
 mkdir -p build/screens
